@@ -1,0 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --green: #00492c;
+  --green-deep: #003620;
+  --gold: #eeb319;
+  --ink: #1d2421;
+  --cream: #fafaee;
+  --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+body {
+  font-family: "Manrope", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+  font-feature-settings: "liga" 1;
+}
+
+::selection {
+  background: rgba(238, 179, 25, 0.45);
+  color: var(--ink);
+}
+
+/* ---------- Reveal on scroll ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 1s var(--ease-expo),
+    transform 1s var(--ease-expo);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal[data-delay="1"] { transition-delay: 0.1s; }
+.reveal[data-delay="2"] { transition-delay: 0.2s; }
+.reveal[data-delay="3"] { transition-delay: 0.3s; }
+.reveal[data-delay="4"] { transition-delay: 0.4s; }
+
+/* ---------- Clip-path button ---------- */
+.btn-clip {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 44px;
+  font-weight: 600;
+  transition: color 0.6s var(--ease-expo);
+}
+.btn-clip .btn-mask {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 0.8s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+.btn-clip:hover .btn-mask,
+.btn-clip:focus-visible .btn-mask {
+  clip-path: inset(0 0 0 0);
+}
+.btn-clip .btn-arrow {
+  transition: transform 0.8s var(--ease-expo);
+}
+.btn-clip:hover .btn-arrow {
+  transform: translateX(0.35em);
+}
+
+/* ---------- Header ---------- */
+.site-header {
+  transform: translateY(-100%);
+  transition: transform 1s var(--ease-expo);
+}
+.site-header.is-active {
+  transform: translateY(0);
+}
+.site-header .header-bg {
+  opacity: 0;
+  transition: opacity 0.8s var(--ease-expo);
+}
+.site-header.is-scrolled .header-bg {
+  opacity: 1;
+}
+
+/* ---------- Menu toggle ---------- */
+.mm-line {
+  display: block;
+  width: 26px;
+  height: 2px;
+  background: currentColor;
+  transition: transform 0.6s var(--ease-expo);
+}
+.mm-line:first-child { transform: translateY(-4px); }
+.mm-line:last-child { transform: translateY(4px); }
+.mm.is-active .mm-line:first-child { transform: rotate(22.5deg) translateY(0); }
+.mm.is-active .mm-line:last-child { transform: rotate(-22.5deg) translateY(0); }
+
+/* ---------- Fullscreen menu overlay ---------- */
+.menu-overlay {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.9s var(--ease-expo);
+  pointer-events: none;
+}
+.menu-overlay.is-open {
+  clip-path: inset(0 0 0 0);
+  pointer-events: auto;
+}
+.menu-link {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.7s var(--ease-expo),
+    transform 0.7s var(--ease-expo),
+    color 0.3s var(--ease-expo);
+}
+.menu-overlay.is-open .menu-link {
+  opacity: 1;
+  transform: translateY(0);
+}
+.menu-overlay.is-open .menu-link:nth-child(1) { transition-delay: 0.15s; }
+.menu-overlay.is-open .menu-link:nth-child(2) { transition-delay: 0.22s; }
+.menu-overlay.is-open .menu-link:nth-child(3) { transition-delay: 0.29s; }
+.menu-overlay.is-open .menu-link:nth-child(4) { transition-delay: 0.36s; }
+.menu-overlay.is-open .menu-link:nth-child(5) { transition-delay: 0.43s; }
+
+/* ---------- Marquee ---------- */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 28s linear infinite;
+}
+
+/* ---------- Outline link hover ---------- */
+.link-outline {
+  transition: box-shadow 0.3s var(--ease-expo);
+}
+.link-outline:hover,
+.link-outline:focus-visible {
+  box-shadow: 0 0 0 1px currentColor;
+}
