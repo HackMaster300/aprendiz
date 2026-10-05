@@ -39,14 +39,59 @@ export function Header() {
     };
   }, [open]);
 
-  const onDark = !scrolled && !open;
+  const [darkBehind, setDarkBehind] = useState(true);
+
+  useEffect(() => {
+    let raf = 0;
+    const parse = (c: string) => {
+      const m = c.match(/rgba?\(([^)]+)\)/);
+      if (!m) return null;
+      const [r, g, b, a = "1"] = m[1].split(/[ ,/]+/).filter(Boolean);
+      return { r: +r, g: +g, b: +b, a: +a };
+    };
+    const sample = () => {
+      const x = window.innerWidth / 2;
+      const y = 36;
+      const els = document.elementsFromPoint(x, y);
+      for (const el of els) {
+        if (el.closest("header") || el.closest(".menu-overlay")) continue;
+        if (el.tagName === "IMG" || el.tagName === "VIDEO") {
+          setDarkBehind(true);
+          return;
+        }
+        const bg = parse(getComputedStyle(el).backgroundColor);
+        if (bg && bg.a > 0.5) {
+          const lum = (0.299 * bg.r + 0.587 * bg.g + 0.114 * bg.b) / 255;
+          setDarkBehind(lum < 0.55);
+          return;
+        }
+      }
+      setDarkBehind(false);
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(sample);
+    };
+    sample();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    const t = window.setTimeout(sample, 300);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(t);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [location.pathname]);
+
+  const onDark = darkBehind || open;
 
   return (
     <>
       <header
         className={`site-header fixed inset-x-0 top-0 z-50 ${active ? "is-active" : ""} ${scrolled ? "is-scrolled" : ""}`}
       >
-        <div className="header-bg absolute inset-0 bg-brand-cream/95 backdrop-blur-sm border-b border-brand-ink/10" aria-hidden="true" />
+        <div className="header-bg absolute inset-0 bg-white/10 backdrop-blur-xl backdrop-saturate-150 border-b border-white/20" aria-hidden="true" />
         <div className="relative mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
           <Link to="/" aria-label="Aprendiz Consultores — Início" className="min-h-[44px] flex items-center">
             <Logo light={onDark} />

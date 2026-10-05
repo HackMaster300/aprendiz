@@ -73,6 +73,7 @@ export function Footer() {
           <p>© {new Date().getFullYear()} Aprendiz Consultores, SU, Lda. Todos os direitos reservados.</p>
           <p>Pemba · Maputo — Moçambique</p>
         </div>
+        <p className="mt-6 text-center text-xs tracking-wider text-brand-cream/50">Developed by Zharak</p>
       </div>
     </footer>
   );
